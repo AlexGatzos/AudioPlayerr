@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// https://developer.android.com/reference/android/media/MediaMetadataRetriever
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Song {
+  id              String     @id @default(uuid())
+  title           String
+  album           Album?     @relation(fields: [albumId], references: [id])
+  artist          Artist?    @relation(fields: [artistId], references: [id])
+  genre           String?
+  cd_track_number String?
+  duration        String
+  year            String?
+  path            String     @unique
+  albumId         String?
+  artistId        String?
+  playlists       Playlist[]
+}
+
+model Album {
+  id       String   @id @default(uuid())
+  title    String
+  songs    Song[]
+  genre    String?
+  year     String?
+  artist   Artist?  @relation(fields: [artistId], references: [id])
+  artistId String?
+}
+
+model Artist {
+  id    String  @id @default(uuid())
+  title String @unique
+  songs Song[]
+  album Album[]
+}
+
+model Playlist {
+  id    String @id @default(uuid())
+  title String
+  songs Song[]
+}
