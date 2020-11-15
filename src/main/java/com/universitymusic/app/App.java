@@ -4,39 +4,40 @@ import java.util.List;
 import java.net.URL;
 import java.util.ArrayList;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+// import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-
 public class App extends Application {
-//     List<Song> songs = new ArrayList<Song>();
+    // List<Song> songs = new ArrayList<Song>();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // primaryStage.setTitle("uMusic");
+        primaryStage.setTitle("uMusic");
 
-        // try {
-        //     FXMLLoader loader = new FXMLLoader();
-        //     URL xmlUrl = getClass().getResource("/AudioPlayer.fxml");
-        //     loader.setLocation(xmlUrl);
-        //     Parent root = loader.load();
+        try {
+            // FXMLLoader loader = new FXMLLoader();
+            // URL xmlUrl = getClass().getResource("/AudioPlayer.fxml");
+            // loader.setLocation(xmlUrl);
+            // Parent root = loader.load();
+            Label label = new Label("Hello World");
 
-        //     primaryStage.setScene(new Scene(root));
-        //     primaryStage.show();
-        // } catch (Exception e) {
-        //     System.out.print("[AUDIO_PLAYER]: FXML ERROR");
-        //     e.printStackTrace();
-        // }
+            primaryStage.setScene(new Scene(label));
+            primaryStage.show();
+        } catch (Exception e) {
+            System.out.print("[AUDIO_PLAYER]: FXML ERROR");
+            e.printStackTrace();
+        }
     }
 
-    public void main(String[] args) {
-        
+    public static void main(String[] args) {
+
         System.out.println("[AUDIO_PLAYER]: 🚀 Program Started");
 
-        // MusicDatabase db = new MusicDatabase();
-        // System.out.println("[AUDIO_PLAYER]: 🚀 MusicDatabase Connection Started");
+        MusicDatabase db = new MusicDatabase();
+        System.out.println("[AUDIO_PLAYER]: 🚀 MusicDatabase Connection Started");
 
         // Boolean seed = db.seedDatabase("/Users/alex/Downloads/music");
         // System.out.println("Seed DB " + seed);
@@ -54,10 +55,11 @@ public class App extends Application {
         // System.out.println("Albums of first artist " + artistAlbums.get(0).title);
 
         // List<Song> allsongs = db.getAllSongs();
-        // // System.out.println("All songs " + allsongs.get(0).title);
+        // System.out.println("All songs " + allsongs.get(0).title);
 
         // for (int i = 0; i < allsongs.size(); i++) {
-        //     System.out.println("All songs " + allsongs.get(i).title + "___" + allsongs.get(i).id);
+        // System.out.println("All songs " + allsongs.get(i).title + "___" +
+        // allsongs.get(i).id);
         // }
 
         // this.songs = allsongs;
@@ -86,7 +88,7 @@ public class App extends Application {
         // Boolean deletePlaylist = db.deletePlaylist(playlist.id);
         // System.out.println("Delete Playlist " + deletePlaylist);
 
-        Application.launch();
+        Application.launch(args);
     }
 
 }
