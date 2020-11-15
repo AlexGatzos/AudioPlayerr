@@ -21,7 +21,7 @@ public class App extends Application {
             
             Parent root = FXMLLoader.load(getClass().getResource("/AudioPlayer.fxml"));           
             primaryStage.setTitle("uMusic");
-            primaryStage.setScene(new Scene(root, 300, 275));
+            primaryStage.setScene(new Scene(root, 800, 600));
             primaryStage.show();
         } catch (Exception e) {
             System.out.print("[AUDIO_PLAYER]: FXML ERROR");
