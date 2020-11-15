@@ -4,7 +4,7 @@ import java.util.List;
 import java.net.URL;
 import java.util.ArrayList;
 import javafx.application.Application;
-// import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -15,16 +15,13 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("uMusic");
+        
 
         try {
-            // FXMLLoader loader = new FXMLLoader();
-            // URL xmlUrl = getClass().getResource("/AudioPlayer.fxml");
-            // loader.setLocation(xmlUrl);
-            // Parent root = loader.load();
-            Label label = new Label("Hello World");
-
-            primaryStage.setScene(new Scene(label));
+            
+            Parent root = FXMLLoader.load(getClass().getResource("/AudioPlayer.fxml"));           
+            primaryStage.setTitle("uMusic");
+            primaryStage.setScene(new Scene(root, 300, 275));
             primaryStage.show();
         } catch (Exception e) {
             System.out.print("[AUDIO_PLAYER]: FXML ERROR");

@@ -8,7 +8,7 @@ build:
 	mvn compile
 
 run:
-	mvn exec:java -Dexec.mainClass="com.universitymusic.app.App"
+	mvn javafx:run
 
 dev:
 	make db-start && make build && make run
