@@ -1,5 +1,7 @@
 package com.universitymusic.app;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,21 +10,36 @@ import javafx.scene.control.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.text.Text;
+
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.util.Duration;
 
 public class AudioPlayerController {
+	private final DecimalFormat formatter = new DecimalFormat("00.00");
+	@FXML
+	private Slider timeSlider = new Slider();
 	@FXML
 	private ListView<String> listView;
 	@FXML
 	private Button play;
 	@FXML
 	private Button pause;
+	@FXML
+	private ProgressBar progressBar = new ProgressBar();
+
+	@FXML
+	private Text currentDuration;
+	@FXML
+	private Text totalDuration;
 
 	private MediaView mediaView;
 	private String currentSongPath;
-	boolean firstTime = true;
+	private Duration totalTime;
+	private boolean firstTime = true;
 
 	ObservableList observableList = FXCollections.observableArrayList();
 	Map<String, String> titlePathMap = new HashMap();
@@ -75,11 +92,42 @@ public class AudioPlayerController {
 				play.setDisable(true);
 				pause.setDisable(false);
 				firstTime = false;
+				applyDurationAndSlider(mediaView.getMediaPlayer());
+
 			} catch (Exception e) {
 				System.err.println(
 						e.getMessage() + " Path: " + selectedSongPath + " is not correct or the file is not existed");
 			}
 		}
+	}
+
+	private void applyDurationAndSlider(MediaPlayer player) {
+		player.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+			@Override
+			public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+				timeSlider.valueProperty().setValue(newValue.divide(totalTime.toMillis()).toMillis() * 100.0);
+				currentDuration.setText(String.valueOf(formatter.format(newValue.toSeconds())));
+
+			}
+		});
+
+		player.setOnReady(() -> {
+			// Set the total duration
+			totalTime = player.getMedia().getDuration();
+			totalDuration.setText(" / " + String.valueOf(formatter.format(Math.floor(totalTime.toSeconds()))));
+		});
+
+		// Slider Binding
+		timeSlider.valueProperty().addListener((ov) -> {
+			if (timeSlider.isValueChanging()) {
+				if (null != player)
+					// multiply duration by percentage calculated by
+					// slider position
+					player.seek(totalTime.multiply(timeSlider.valueProperty().getValue() / 100.0));
+				progressBar.prefWidthProperty().bind(timeSlider.widthProperty());
+				progressBar.progressProperty().bind(timeSlider.valueProperty().divide(100));
+			}
+		});
 	}
 
 	private String modifyPath(String currentSongPath) {
