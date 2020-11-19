@@ -22,21 +22,21 @@
                   <Font name="Cochin" size="23.0" />
                </font>
             </Label>
-            <Label layoutX="45.0" layoutY="139.0" prefHeight="20.0" prefWidth="63.0" text="Artist" textFill="#54a6b8">
+            <Button id="artists" fx:id="artists" layoutX="35.0" layoutY="139.0" prefHeight="20.0" prefWidth="125.0" text="Artist" textFill="#54a6b8" onAction="#setListViewArtists">
                <font>
-                  <Font name="Cochin" size="18.0" />
+                  <Font name="Cochin" size="15.0" />
                </font>
-            </Label>
-            <Label layoutX="45.0" layoutY="168.0" prefHeight="20.0" prefWidth="63.0" text="Abums" textFill="#54a6b8">
+            </Button>
+            <Button id="albums" fx:id="albums" layoutX="35.0" layoutY="168.0" prefHeight="20.0" prefWidth="125.0" text="Albums" textFill="#54a6b8" onAction="#setListViewAlbums">
                <font>
-                  <Font name="Cochin" size="18.0" />
+                  <Font name="Cochin" size="15.0" />
                </font>
-            </Label>
-            <Label layoutX="45.0" layoutY="196.0" prefHeight="20.0" prefWidth="63.0" text="Songs" textFill="#54a6b8">
+            </Button>
+            <Button id="songs" fx:id="songs" layoutX="35.0" layoutY="196.0" prefHeight="20.0" prefWidth="125.0" text="Songs" textFill="#54a6b8" onAction="#setListViewSongs">
                <font>
-                  <Font name="Cochin" size="18.0" />
+                  <Font name="Cochin" size="15.0" />
                </font>
-            </Label>
+            </Button>
             <Pane layoutX="17.0" layoutY="300.0" prefHeight="200.0" prefWidth="200.0">
                <children>
                   <Label text="Playlists" textFill="#3b707c">
@@ -71,7 +71,8 @@
       <Pane layoutX="161.0" layoutY="519.0" prefHeight="81.0" prefWidth="639.0" style="-fx-background-color: black;" />
       <Pane layoutX="171.0" layoutY="81.0" prefHeight="438.0" prefWidth="629.0" style="-fx-background-color: rgbs(62,64,66,0.5);">
          <children>
-            <ListView fx:id="listView"/>
+            <ListView fx:id="listViewSongs" visible="false" layoutX="270.0" layoutY="01.0" prefHeight="300" prefWidth="400.0"/>
+            <ListView fx:id="listViewAlbums" visible="false"/>
             <ProgressBar fx:id="progressBar" layoutX="300" layoutY="310.0" prefHeight="20.0" prefWidth="250.0" progress="0.0" />
             <Slider fx:id="timeSlider" blockIncrement="0.1" layoutX="300" layoutY="310.0" prefHeight="30.0" prefWidth="250.0"/>
             <Text fx:id="currentDuration" text="00,00 /" layoutX="375.0" layoutY="350.0"/>
