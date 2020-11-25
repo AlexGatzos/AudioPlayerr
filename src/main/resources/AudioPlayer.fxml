@@ -75,6 +75,7 @@
             <ListView fx:id="listViewAlbums" visible="false"/>
             <ProgressBar fx:id="progressBar" layoutX="300" layoutY="310.0" prefHeight="20.0" prefWidth="250.0" progress="0.0" />
             <Slider fx:id="timeSlider" blockIncrement="0.1" layoutX="300" layoutY="310.0" prefHeight="30.0" prefWidth="250.0"/>
+            <Slider fx:id="volumeSlider" blockIncrement="0.1" layoutX="560" layoutY="310.0" prefHeight="30.0" prefWidth="40.0"/>
             <Text fx:id="currentDuration" text="00,00 /" layoutX="375.0" layoutY="350.0"/>
             <Text fx:id="totalDuration" text="00,00" layoutX="410" layoutY="350.0" />
             <Button id="play" fx:id="play" layoutX="370.0" layoutY="360.0" mnemonicParsing="false" onAction="#playAction" prefHeight="50.0" prefWidth="50.0" style="-fx-border-radius: 10px; -fx-background-image: url(images/playBtn.png); -fx-background-size: 50px 50px; -fx-background-color: Transparent;"/>

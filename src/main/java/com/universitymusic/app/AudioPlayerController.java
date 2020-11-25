@@ -1,5 +1,7 @@
 package com.universitymusic.app;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -7,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -45,6 +48,8 @@ public class AudioPlayerController {
 	private Text currentDuration;
 	@FXML
 	private Text totalDuration;
+	@FXML 
+	private Slider volumeSlider;
 
 	private MediaView mediaView;
 	private String currentSongPath;
@@ -73,7 +78,7 @@ public class AudioPlayerController {
 		//initialize albums
 		List<Album> allAlbums = db.getAlbums();
 		
-		for (Album album: allAlbums) {
+		for (Album album: allAlbums) { 
 			observableListAlbums.add(album.title);
 			albumidAlbumtitleMap.put(album.title,album.id);
 		}
@@ -117,6 +122,14 @@ public class AudioPlayerController {
 				pause.setDisable(false);
 				firstTime = false;
 				applyDurationAndSlider(mediaView.getMediaPlayer());
+				
+				volumeSlider.valueProperty().addListener(new InvalidationListener() {
+				    public void invalidated(Observable ov) {
+				       if (volumeSlider.isValueChanging() && mediaView!= null) {
+				    	   mediaView.getMediaPlayer().setVolume(volumeSlider.getValue() / 100.0);
+				       }
+				    }
+				});
 
 			} catch (Exception e) {
 				System.err.println(
@@ -234,6 +247,16 @@ public class AudioPlayerController {
 				progressBar.progressProperty().bind(timeSlider.valueProperty().divide(100));
 			}
 		});
+		
+		//volumeSlider
+		volumeSlider.valueProperty().addListener((ov) -> {
+            if (null != player) {
+                // multiply duration by percentage calculated by
+                // slider position
+            	player.setVolume(volumeSlider.valueProperty()
+                        .getValue() / 100.0);
+            }
+        });
 	}
 
 	private String modifyPath(String currentSongPath) {
