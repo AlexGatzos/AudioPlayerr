@@ -19,10 +19,13 @@ public class App extends Application {
 
         try {
             
-            Parent root = FXMLLoader.load(getClass().getResource("/AudioPlayer.fxml"));           
+            Parent root = FXMLLoader.load(getClass().getResource("/Audio.fxml"));           
             primaryStage.setTitle("uMusic");
-            primaryStage.setScene(new Scene(root, 800, 600));
+            Scene scene = new Scene(root, 742, 490);
+            scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+            primaryStage.setScene(scene);
             primaryStage.show();
+
         } catch (Exception e) {
             System.out.print("[AUDIO_PLAYER]: FXML ERROR");
             e.printStackTrace();
@@ -36,8 +39,8 @@ public class App extends Application {
         MusicDatabase db = new MusicDatabase();
         System.out.println("[AUDIO_PLAYER]: 🚀 MusicDatabase Connection Started");
 
-        // Boolean seed = db.seedDatabase("/Users/alex/Downloads/music");
-        // System.out.println("Seed DB " + seed);
+        Boolean seed = db.seedDatabase("/Users/alex/Downloads/music");
+        System.out.println("Seed DB " + seed);
 
         // List<Album> albums = db.getAlbums();
         // System.out.println("All albums " + albums.get(0).title);
