@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javafx.util.Duration;
 
 public class AudioPlayerController {
@@ -33,6 +34,8 @@ public class AudioPlayerController {
 	@FXML
 	private ListView<String> listViewArtists;
 	@FXML
+	private ListView<String> listViewPlaylists;
+	@FXML
 	private Button play;
 	@FXML
 	private Button pause;
@@ -43,6 +46,14 @@ public class AudioPlayerController {
 	@FXML
 	private Button artists;
 	@FXML
+	private Button addSongToPlaylist;//exists only in songs list which is not under playlist
+	@FXML
+	private Button deleteSongFromPlaylist;//exists only in songs list under playlist
+	@FXML
+	private Button createPlaylist;
+	@FXML
+	private Button deletePlaylist;
+	@FXML
 	private ProgressBar progressBar = new ProgressBar();
 	@FXML
 	private Text currentDuration;
@@ -50,6 +61,8 @@ public class AudioPlayerController {
 	private Text totalDuration;
 	@FXML 
 	private Slider volumeSlider;
+	@FXML
+	private TextField newPlaylistName;
 
 	private MediaView mediaView;
 	private String currentSongPath;
@@ -58,13 +71,18 @@ public class AudioPlayerController {
 	private MusicDatabase db;
 	private List<Song> allsongs;
 	private List<Artist> allArtists;
+	private Map<String, String> titlePathMap = new HashMap();
+	private Map<String, String> titleSongIdSong = new HashMap();
+	private Map<String, String> albumidAlbumtitleMap = new HashMap();
+	private Map<String, String> artistidArtisttitleMap = new HashMap();
+	private Map<String, String> playlistidPlaylisttitleMap = new HashMap();
+	private Map<String, String> playlistIdSongIdMap = new HashMap();
+	private String selectedPlaylistId;
 
 	ObservableList observableListSongs = FXCollections.observableArrayList();
 	ObservableList observableListAlbums = FXCollections.observableArrayList();
 	ObservableList observableListArtists = FXCollections.observableArrayList();
-	Map<String, String> titlePathMap = new HashMap();;
-	Map<String, String> albumidAlbumtitleMap = new HashMap();
-	Map<String, String> artistidArtisttitleMap = new HashMap();
+	ObservableList observableListPlaylists = FXCollections.observableArrayList();
 
 	@FXML
 	void initialize() {
@@ -90,8 +108,68 @@ public class AudioPlayerController {
 			observableListArtists.add(artist.title);
 			artistidArtisttitleMap.put(artist.title,artist.id);
 		}
+		
+		//initialize playlists
+		List<Playlist> allPlaylists = db.getPlaylists();
+		for (Playlist playlist: allPlaylists) {
+			observableListPlaylists.add(playlist.title);
+			playlistidPlaylisttitleMap.put(playlist.title, playlist.id);
+		}				
 	}
 
+	@FXML
+	private void createPlaylist(ActionEvent event) {
+		if (newPlaylistName != null && !newPlaylistName.getText().isEmpty()) {
+			db.createPlaylist(newPlaylistName.getText());
+		} else {
+			System.out.println("Please give a name to playlist");
+		}
+	}
+	
+	@FXML
+	private void deletePlaylist(ActionEvent event) {
+		if (listViewPlaylists.getSelectionModel().getSelectedItem() != null) {
+			db.deletePlaylist(playlistidPlaylisttitleMap.get(listViewPlaylists.getSelectionModel().getSelectedItem()));
+		}
+	}
+	
+	@FXML
+	private void deletePlaylistSong(ActionEvent event) {
+		if (listViewSongs.getSelectionModel().getSelectedItem() != null) {
+			db.deletePlaylistSong(selectedPlaylistId, titleSongIdSong.get(listViewSongs.getSelectionModel().getSelectedItem()));
+		}
+	}
+	
+	@FXML
+	private void addPlaylistSongs(ActionEvent event) {
+		if (listViewSongs.getSelectionModel().getSelectedItem() != null) {
+			db.addPlaylistSong(selectedPlaylistId, titleSongIdSong.get(listViewSongs.getSelectionModel().getSelectedItem()));
+		}
+	}
+	
+	@FXML
+	private void setListViewPlaylists() {
+		if (listViewPlaylists != null) {
+			listViewPlaylists.getItems().clear();
+			listViewPlaylists.getItems().addAll(observableListPlaylists);
+			
+			listViewPlaylists.setVisible(true);
+			listViewAlbums.setVisible(false);
+			listViewSongs.setVisible(false);
+			
+			listViewPlaylists.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			    @Override
+			    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+			    	selectedPlaylistId = playlistidPlaylisttitleMap.get(newValue);
+			    	setListViewPlaylistSongs(selectedPlaylistId);
+			    }
+			});
+		} else {
+			System.out.println("There are no playlists to preview!");
+		}
+	}
+	
+	
 	@FXML
 	private void pauseAction(ActionEvent event) {
 		mediaView.getMediaPlayer().pause();
@@ -151,6 +229,8 @@ public class AudioPlayerController {
 			
 			listViewAlbums.setVisible(true);
 			listViewSongs.setVisible(false);
+			listViewPlaylists.setVisible(false);
+			listViewArtists.setVisible(false);
 			
 			listViewAlbums.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			    @Override
@@ -173,6 +253,7 @@ public class AudioPlayerController {
 			listViewArtists.setVisible(true);
 			listViewAlbums.setVisible(false);
 			listViewSongs.setVisible(false);
+			listViewPlaylists.setVisible(false);
 			
 			listViewArtists.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			    @Override
@@ -192,16 +273,19 @@ public class AudioPlayerController {
 		
 		observableListSongs.clear();
 		titlePathMap.clear(); 
+		titleSongIdSong.clear();
 		for (Song song : songs) {
 			observableListSongs.add(song.title);
 			titlePathMap.put(song.title, song.path);
+			titleSongIdSong.put(song.title, song.id);
+			
 		}
 		listViewSongs.getItems().clear();
 		listViewSongs.getItems().addAll(observableListSongs);
 		listViewSongs.setVisible(true);
 		if (listViewAlbums != null && !remainVisible) listViewAlbums.setVisible(false);
 		if (listViewArtists != null && !remainVisible) listViewArtists.setVisible(false);
-		
+		if (listViewPlaylists != null && !remainVisible) listViewPlaylists.setVisible(false);
 	}
 	
 	private void setListViewAlbumSongs(String albumId) {
@@ -209,7 +293,14 @@ public class AudioPlayerController {
 		setSongs(albumSongs,true);
 	}
 	
+	private void setListViewPlaylistSongs(String playlistId) {
+		deleteSongFromPlaylist.setVisible(true);
+		List<Song> playListSongs = db.getPlaylistSongs(playlistId);
+		setSongs(playListSongs,true);
+	}
+	
 	private void setListViewArtistSongs(String artistId) {
+		deleteSongFromPlaylist.setVisible(false);
 		//εδώ το κάνουμρ από το array lisτ και όχι μέσω της db
 		List<Song> artistSongs = new ArrayList();
 		for (Song song: allsongs) {
