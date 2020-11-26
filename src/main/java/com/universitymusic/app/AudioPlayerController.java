@@ -154,8 +154,8 @@ public class AudioPlayerController {
 			listViewPlaylists.getItems().addAll(observableListPlaylists);
 			
 			listViewPlaylists.setVisible(true);
-			listViewAlbums.setVisible(false);
-			listViewSongs.setVisible(false);
+			if (listViewAlbums != null) listViewAlbums.setVisible(false);
+			if (listViewSongs != null) listViewSongs.setVisible(false);
 			
 			listViewPlaylists.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			    @Override
@@ -228,9 +228,9 @@ public class AudioPlayerController {
 			listViewAlbums.getItems().addAll(observableListAlbums);
 			
 			listViewAlbums.setVisible(true);
-			listViewSongs.setVisible(false);
-			listViewPlaylists.setVisible(false);
-			listViewArtists.setVisible(false);
+			if (listViewSongs != null) listViewSongs.setVisible(false);
+			if (listViewPlaylists!= null) listViewPlaylists.setVisible(false);
+			if (listViewArtists != null) listViewArtists.setVisible(false);
 			
 			listViewAlbums.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			    @Override
@@ -251,9 +251,9 @@ public class AudioPlayerController {
 			listViewArtists.getItems().addAll(observableListArtists);
 			
 			listViewArtists.setVisible(true);
-			listViewAlbums.setVisible(false);
-			listViewSongs.setVisible(false);
-			listViewPlaylists.setVisible(false);
+			if (listViewAlbums!= null) listViewAlbums.setVisible(false);
+			if (listViewSongs!= null) listViewSongs.setVisible(false);
+			if (listViewPlaylists!= null) listViewPlaylists.setVisible(false);
 			
 			listViewArtists.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			    @Override
