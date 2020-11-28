@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,11 @@ public class AudioPlayerController {
 	@FXML
 	private Button artists;
 	@FXML
-	private Button addSongToPlaylist;//exists only in songs list which is not under playlist
+	private Button playlists;
+	@FXML
+	private Button createPl;
+	@FXML
+	private MenuButton addSongToPlaylist;//exists only in songs list which is not under playlist
 	@FXML
 	private Button deleteSongFromPlaylist;//exists only in songs list under playlist
 	@FXML
@@ -121,6 +126,8 @@ public class AudioPlayerController {
 	private void createPlaylist(ActionEvent event) {
 		if (newPlaylistName != null && !newPlaylistName.getText().isEmpty()) {
 			db.createPlaylist(newPlaylistName.getText());
+			observableListPlaylists.add(newPlaylistName.getText());
+			setListViewPlaylists();
 		} else {
 			System.out.println("Please give a name to playlist");
 		}
@@ -140,8 +147,8 @@ public class AudioPlayerController {
 		}
 	}
 	
-	@FXML
-	private void addPlaylistSongs(ActionEvent event) {
+	//@FXML
+	private void addPlaylistSongs() {
 		if (listViewSongs.getSelectionModel().getSelectedItem() != null) {
 			db.addPlaylistSong(selectedPlaylistId, titleSongIdSong.get(listViewSongs.getSelectionModel().getSelectedItem()));
 		}
@@ -149,10 +156,12 @@ public class AudioPlayerController {
 	
 	@FXML
 	private void setListViewPlaylists() {
+		createPl.setVisible(true);
+		newPlaylistName.setVisible(true);
+		
 		if (listViewPlaylists != null) {
 			listViewPlaylists.getItems().clear();
-			listViewPlaylists.getItems().addAll(observableListPlaylists);
-			
+			listViewPlaylists.getItems().addAll(observableListPlaylists);	
 			listViewPlaylists.setVisible(true);
 			if (listViewAlbums != null) listViewAlbums.setVisible(false);
 			if (listViewSongs != null) listViewSongs.setVisible(false);
@@ -218,7 +227,9 @@ public class AudioPlayerController {
 	
 	@FXML
 	private void setListViewSongs() {
-		setSongs(allsongs,false);
+		if (createPl != null) createPl.setVisible(false);
+		if (newPlaylistName != null) newPlaylistName.setVisible(false);
+		setSongs(allsongs,false,false);
 	}
 	
 	@FXML
@@ -228,6 +239,8 @@ public class AudioPlayerController {
 			listViewAlbums.getItems().addAll(observableListAlbums);
 			
 			listViewAlbums.setVisible(true);
+			if (createPl != null) createPl.setVisible(false);
+			if (newPlaylistName != null) newPlaylistName.setVisible(false);
 			if (listViewSongs != null) listViewSongs.setVisible(false);
 			if (listViewPlaylists!= null) listViewPlaylists.setVisible(false);
 			if (listViewArtists != null) listViewArtists.setVisible(false);
@@ -249,8 +262,9 @@ public class AudioPlayerController {
 		if (listViewArtists != null) {
 			listViewArtists.getItems().clear();
 			listViewArtists.getItems().addAll(observableListArtists);
-			
 			listViewArtists.setVisible(true);
+			if (createPl != null )createPl.setVisible(false);
+			if (newPlaylistName != null) newPlaylistName.setVisible(false);
 			if (listViewAlbums!= null) listViewAlbums.setVisible(false);
 			if (listViewSongs!= null) listViewSongs.setVisible(false);
 			if (listViewPlaylists!= null) listViewPlaylists.setVisible(false);
@@ -268,8 +282,23 @@ public class AudioPlayerController {
 		
 	}
 	
-	private void setSongs (List<Song> songs, boolean remainVisible) {
+	private void setSongs (List<Song> songs, boolean remainVisible, boolean isCalledFromPlaylist) {
 		assert listViewSongs != null : "fx:id=\"listViewSongs\" was not injected: check your FXML file 'CustomList.fxml'.";
+		
+		if (observableListPlaylists != null && !isCalledFromPlaylist) {
+			addSongToPlaylist.setVisible(true);
+			addSongToPlaylist.getItems().clear();
+			for (Object itemText: observableListPlaylists) {
+				 MenuItem item = new MenuItem(itemText.toString());
+				 item.setOnAction(a->{ //lambda expression
+					 selectedPlaylistId = playlistidPlaylisttitleMap.get(item.getText());
+					 addPlaylistSongs();
+				     });
+				 addSongToPlaylist.getItems().add(item);
+			}
+		} else {
+			if (addSongToPlaylist != null) addSongToPlaylist.setVisible(false);
+		}
 		
 		observableListSongs.clear();
 		titlePathMap.clear(); 
@@ -278,7 +307,6 @@ public class AudioPlayerController {
 			observableListSongs.add(song.title);
 			titlePathMap.put(song.title, song.path);
 			titleSongIdSong.put(song.title, song.id);
-			
 		}
 		listViewSongs.getItems().clear();
 		listViewSongs.getItems().addAll(observableListSongs);
@@ -286,21 +314,26 @@ public class AudioPlayerController {
 		if (listViewAlbums != null && !remainVisible) listViewAlbums.setVisible(false);
 		if (listViewArtists != null && !remainVisible) listViewArtists.setVisible(false);
 		if (listViewPlaylists != null && !remainVisible) listViewPlaylists.setVisible(false);
+		
+		if (!isCalledFromPlaylist) {
+			if (createPl != null) createPl.setVisible(false);
+			if (newPlaylistName != null) newPlaylistName.setVisible(false);
+		}
 	}
 	
 	private void setListViewAlbumSongs(String albumId) {
 		List<Song> albumSongs = db.getAlbumSongs(albumId);
-		setSongs(albumSongs,true);
+		setSongs(albumSongs,true,false);
 	}
 	
 	private void setListViewPlaylistSongs(String playlistId) {
-		deleteSongFromPlaylist.setVisible(true);
+		//if (deleteSongFromPlaylist != null) deleteSongFromPlaylist.setVisible(true);
 		List<Song> playListSongs = db.getPlaylistSongs(playlistId);
-		setSongs(playListSongs,true);
+		setSongs(playListSongs,true,true);
 	}
 	
 	private void setListViewArtistSongs(String artistId) {
-		deleteSongFromPlaylist.setVisible(false);
+		if (deleteSongFromPlaylist != null) deleteSongFromPlaylist.setVisible(false);
 		//εδώ το κάνουμρ από το array lisτ και όχι μέσω της db
 		List<Song> artistSongs = new ArrayList();
 		for (Song song: allsongs) {
@@ -308,7 +341,7 @@ public class AudioPlayerController {
 				artistSongs.add(song);
 			}
 		}
-		setSongs(artistSongs,true);
+		setSongs(artistSongs,true,false);
 	}
 	
 	private void applyDurationAndSlider(MediaPlayer player) {

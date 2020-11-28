@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -32,7 +34,7 @@
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" layoutY="230.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: Transparent;" text="Playlists" textAlignment="CENTER" textFill="#edeced">
+                  <Button alignment="CENTER" contentDisplay="CENTER" layoutY="230.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="134.0" style="-fx-background-color: Transparent;" text="Playlists" textAlignment="CENTER" textFill="#edeced" onAction="#setListViewPlaylists">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -46,16 +48,23 @@
                         <Font name="System Italic" size="18.0" />
                      </font>
                   </Label>
-                  
             
                   <ListView fx:id="listViewAlbums" layoutY="44.0" prefHeight="386.0" prefWidth="200.0" style="-fx-border-color: #1e1e1e;" stylesheets="@style.css" visible="false" />
+                          
+             	  <ListView fx:id="listViewPlaylists" layoutY="44.0" prefHeight="386.0" prefWidth="200.0" style="-fx-border-color: #1e1e1e;" stylesheets="@style.css" visible="false"/>
+            	  <TextField fx:id="newPlaylistName" visible="false" layoutY="370.0" prefHeight="40.0" prefWidth="80.0"/>
+           	      <Button id="createPlaylist" fx:id="createPl" text="Create Playlist" layoutY="370.0" layoutX="80.0" prefHeight="40.0" prefWidth="100.0" onAction="#createPlaylist" visible="false"/>
+      
                </children>
             </AnchorPane>
             <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="393.0" prefWidth="409.0" style="-fx-background-color: #1e1e1e;">
                <children>
                   <ListView fx:id="listViewSongs" prefHeight="430.0" prefWidth="409.0" style="-fx-border-color: #1e1e1e;" visible="false" />
+               	  <MenuButton fx:id="addSongToPlaylist" text="+" layoutY="370.0" layoutX="300.0" prefHeight="40.0" prefWidth="40.0" visible="false"/>
+      
                </children>
             </AnchorPane>
+     
          </children>
       </HBox>
       <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="742.0" style="-fx-background-color: #302f31;">
