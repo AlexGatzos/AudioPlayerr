@@ -66,6 +66,9 @@ public class AudioPlayerController {
 	private Slider volumeSlider;
 	@FXML
 	private TextField newPlaylistName;
+	@FXML
+	private Label labelViewTitle;
+
 
 	private MediaView mediaView;
 	private String currentSongPath;
@@ -161,7 +164,7 @@ public class AudioPlayerController {
 		createPl.setVisible(true);
 		deletePlaylist.setVisible(true);
 		newPlaylistName.setVisible(true);
-		
+		if (labelViewTitle != null) labelViewTitle.setText("Playlists");
 		if (listViewPlaylists != null) {
 			listViewPlaylists.getItems().clear();
 			listViewPlaylists.getItems().addAll(observableListPlaylists);	
@@ -234,6 +237,7 @@ public class AudioPlayerController {
 		if (deletePlaylist != null) deletePlaylist.setVisible(false);
 		if (newPlaylistName != null) newPlaylistName.setVisible(false);
 		setSongs(allsongs,false,false);
+		if (labelViewTitle != null) labelViewTitle.setText("Songs");
 	}
 	
 	@FXML
@@ -249,6 +253,7 @@ public class AudioPlayerController {
 			if (listViewSongs != null) listViewSongs.setVisible(false);
 			if (listViewPlaylists!= null) listViewPlaylists.setVisible(false);
 			if (listViewArtists != null) listViewArtists.setVisible(false);
+			if (labelViewTitle != null) labelViewTitle.setText("Albums");
 			
 			listViewAlbums.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			    @Override
@@ -274,6 +279,7 @@ public class AudioPlayerController {
 			if (listViewAlbums!= null) listViewAlbums.setVisible(false);
 			if (listViewSongs!= null) listViewSongs.setVisible(false);
 			if (listViewPlaylists!= null) listViewPlaylists.setVisible(false);
+			if (labelViewTitle != null) labelViewTitle.setText("Artists");
 			
 			listViewArtists.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			    @Override
