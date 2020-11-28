@@ -52,16 +52,17 @@
                   <ListView fx:id="listViewAlbums" layoutY="44.0" prefHeight="386.0" prefWidth="200.0" style="-fx-border-color: #1e1e1e;" stylesheets="@style.css" visible="false" />
                           
              	  <ListView fx:id="listViewPlaylists" layoutY="44.0" prefHeight="386.0" prefWidth="200.0" style="-fx-border-color: #1e1e1e;" stylesheets="@style.css" visible="false"/>
-            	  <TextField fx:id="newPlaylistName" visible="false" layoutY="370.0" prefHeight="40.0" prefWidth="80.0"/>
-           	      <Button id="createPlaylist" fx:id="createPl" text="Create Playlist" layoutY="370.0" layoutX="80.0" prefHeight="40.0" prefWidth="100.0" onAction="#createPlaylist" visible="false"/>
+            	  <TextField fx:id="newPlaylistName" visible="false" layoutY="370.0" prefHeight="20.0" prefWidth="80.0"/>
+           	      <Button fx:id="createPl" text="Create Playlist" layoutY="370.0" layoutX="80.0" prefHeight="20.0" prefWidth="100.0" onAction="#createPlaylist" visible="false"/>
+           	      <Button fx:id="deletePlaylist" text="Delete Playlist" layoutY="340" layoutX="80.0" prefHeight="20.0" prefWidth="100.0" onAction="#deletePlaylist" visible="false"/>
       
                </children>
             </AnchorPane>
             <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="393.0" prefWidth="409.0" style="-fx-background-color: #1e1e1e;">
                <children>
                   <ListView fx:id="listViewSongs" prefHeight="430.0" prefWidth="409.0" style="-fx-border-color: #1e1e1e;" visible="false" />
-               	  <MenuButton fx:id="addSongToPlaylist" text="+" layoutY="370.0" layoutX="300.0" prefHeight="40.0" prefWidth="40.0" visible="false"/>
-      
+               	  <MenuButton fx:id="addSongToPlaylist" text="+" layoutY="370.0" layoutX="300.0" prefHeight="40.0" prefWidth="50.0" visible="false"/>
+               	  <Button fx:id="deleteSongFromPlaylist" text="-" layoutY="370.0" layoutX="300.0" prefHeight="40.0" prefWidth="50.0" visible="false" onAction="#deletePlaylistSong"/>
                </children>
             </AnchorPane>
      

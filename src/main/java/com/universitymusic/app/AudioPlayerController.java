@@ -55,8 +55,6 @@ public class AudioPlayerController {
 	@FXML
 	private Button deleteSongFromPlaylist;//exists only in songs list under playlist
 	@FXML
-	private Button createPlaylist;
-	@FXML
 	private Button deletePlaylist;
 	@FXML
 	private ProgressBar progressBar = new ProgressBar();
@@ -125,8 +123,9 @@ public class AudioPlayerController {
 	@FXML
 	private void createPlaylist(ActionEvent event) {
 		if (newPlaylistName != null && !newPlaylistName.getText().isEmpty()) {
-			db.createPlaylist(newPlaylistName.getText());
-			observableListPlaylists.add(newPlaylistName.getText());
+			Playlist newPlaylist = db.createPlaylist(newPlaylistName.getText());
+			observableListPlaylists.add(newPlaylist.title);
+			playlistidPlaylisttitleMap.put(newPlaylist.title,newPlaylist.id);
 			setListViewPlaylists();
 		} else {
 			System.out.println("Please give a name to playlist");
@@ -137,6 +136,9 @@ public class AudioPlayerController {
 	private void deletePlaylist(ActionEvent event) {
 		if (listViewPlaylists.getSelectionModel().getSelectedItem() != null) {
 			db.deletePlaylist(playlistidPlaylisttitleMap.get(listViewPlaylists.getSelectionModel().getSelectedItem()));
+			observableListPlaylists.remove(listViewPlaylists.getSelectionModel().getSelectedItem());
+			playlistidPlaylisttitleMap.remove(listViewPlaylists.getSelectionModel().getSelectedItem());
+			setListViewPlaylists();
 		}
 	}
 	
@@ -144,10 +146,10 @@ public class AudioPlayerController {
 	private void deletePlaylistSong(ActionEvent event) {
 		if (listViewSongs.getSelectionModel().getSelectedItem() != null) {
 			db.deletePlaylistSong(selectedPlaylistId, titleSongIdSong.get(listViewSongs.getSelectionModel().getSelectedItem()));
+			setListViewPlaylistSongs(selectedPlaylistId);
 		}
 	}
 	
-	//@FXML
 	private void addPlaylistSongs() {
 		if (listViewSongs.getSelectionModel().getSelectedItem() != null) {
 			db.addPlaylistSong(selectedPlaylistId, titleSongIdSong.get(listViewSongs.getSelectionModel().getSelectedItem()));
@@ -157,6 +159,7 @@ public class AudioPlayerController {
 	@FXML
 	private void setListViewPlaylists() {
 		createPl.setVisible(true);
+		deletePlaylist.setVisible(true);
 		newPlaylistName.setVisible(true);
 		
 		if (listViewPlaylists != null) {
@@ -228,6 +231,7 @@ public class AudioPlayerController {
 	@FXML
 	private void setListViewSongs() {
 		if (createPl != null) createPl.setVisible(false);
+		if (deletePlaylist != null) deletePlaylist.setVisible(false);
 		if (newPlaylistName != null) newPlaylistName.setVisible(false);
 		setSongs(allsongs,false,false);
 	}
@@ -240,6 +244,7 @@ public class AudioPlayerController {
 			
 			listViewAlbums.setVisible(true);
 			if (createPl != null) createPl.setVisible(false);
+			if (deletePlaylist != null) deletePlaylist.setVisible(false);
 			if (newPlaylistName != null) newPlaylistName.setVisible(false);
 			if (listViewSongs != null) listViewSongs.setVisible(false);
 			if (listViewPlaylists!= null) listViewPlaylists.setVisible(false);
@@ -264,6 +269,7 @@ public class AudioPlayerController {
 			listViewArtists.getItems().addAll(observableListArtists);
 			listViewArtists.setVisible(true);
 			if (createPl != null )createPl.setVisible(false);
+			if (deletePlaylist != null) deletePlaylist.setVisible(false);
 			if (newPlaylistName != null) newPlaylistName.setVisible(false);
 			if (listViewAlbums!= null) listViewAlbums.setVisible(false);
 			if (listViewSongs!= null) listViewSongs.setVisible(false);
@@ -287,6 +293,7 @@ public class AudioPlayerController {
 		
 		if (observableListPlaylists != null && !isCalledFromPlaylist) {
 			addSongToPlaylist.setVisible(true);
+			if (deleteSongFromPlaylist != null) deleteSongFromPlaylist.setVisible(false);
 			addSongToPlaylist.getItems().clear();
 			for (Object itemText: observableListPlaylists) {
 				 MenuItem item = new MenuItem(itemText.toString());
@@ -298,6 +305,7 @@ public class AudioPlayerController {
 			}
 		} else {
 			if (addSongToPlaylist != null) addSongToPlaylist.setVisible(false);
+			deleteSongFromPlaylist.setVisible(true);
 		}
 		
 		observableListSongs.clear();
@@ -317,6 +325,7 @@ public class AudioPlayerController {
 		
 		if (!isCalledFromPlaylist) {
 			if (createPl != null) createPl.setVisible(false);
+			if (deletePlaylist != null) deletePlaylist.setVisible(false);
 			if (newPlaylistName != null) newPlaylistName.setVisible(false);
 		}
 	}
@@ -327,7 +336,7 @@ public class AudioPlayerController {
 	}
 	
 	private void setListViewPlaylistSongs(String playlistId) {
-		//if (deleteSongFromPlaylist != null) deleteSongFromPlaylist.setVisible(true);
+		if (deleteSongFromPlaylist != null) deleteSongFromPlaylist.setVisible(true);
 		List<Song> playListSongs = db.getPlaylistSongs(playlistId);
 		setSongs(playListSongs,true,true);
 	}
